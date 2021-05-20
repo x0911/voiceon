@@ -1,7 +1,11 @@
 {
   "name": "voiceon",
+  "description": "Your virtual assistant",
   "version": "1.0.0",
   "private": true,
+  "author": {
+    "name": "Max Smith"
+  },
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
