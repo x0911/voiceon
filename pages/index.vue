@@ -1,89 +1,83 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
+  <div>
+    <v-card tile flat>
+      <v-card-title class="pb-2"> Available commands </v-card-title>
+      <v-card-text>
+        <div>You can see <b>available commands</b> in the left sidebar</div>
+        <div>Click on the hamburger button on the top left to toggle it</div>
+      </v-card-text>
+    </v-card>
+    <v-card tile flat>
+      <v-card-title class="pb-2"> Continuous mode </v-card-title>
+      <v-card-text>
+        <div>It is disabled by default</div>
+        <div>
+          Try the experience with VoiceOn app without the continuous mode.
+        </div>
+        <div>Then turn it on to see the difference</div>
+        <div>
+          After turning continuous mode on, you'll need to say the wake word
+        </div>
+        <div>It's ' Jarvis ', then you can begin giving commands.</div>
+      </v-card-text>
+    </v-card>
+    <v-card tile flat>
+      <v-card-title class="pb-2"> Command tips </v-card-title>
+      <v-card-text>
+        <template v-for="(tip, i) in tips">
+          <div :key="i" class="mb-3">
+            <div>
+              <span class="font-weight-medium">
+                {{ i + 1 }}.
+                {{ tip.title }}
+              </span>
+              <template v-for="(alias, ai) in tip.aliases">
+                <br :key="`alias_${ai}`" />
+                - alias : {{ alias }}
+              </template>
+            </div>
           </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+        </template>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
 export default {
-  components: {
-    Logo,
-    VuetifyLogo
-  }
+  components: {},
+  data: () => ({
+    tips: [
+      {
+        title: "Say ' go home ' to navigate to home page",
+        aliases: ['go home page', 'go to home page', 'go to home'],
+      },
+      {
+        title: "Say ' go to awesome page ' to navigate to the awesome page",
+        aliases: ['go awesome page'],
+      },
+      {
+        title: "Say ' go back ' to navigate backward",
+        aliases: [],
+      },
+      {
+        title: "Say ' open login modal ' to show the login modal",
+        aliases: ['view login modal', 'show login modal'],
+      },
+      {
+        title: "Say ' open register modal ' to show the register modal",
+        aliases: ['view register modal', 'show register modal'],
+      },
+      {
+        title: "Say ' hide modal ' to hide any active modal",
+        aliases: [
+          'close modal',
+          'hide login modal ( Hide the login modal only )',
+          'hide register modal ( Hide the register modal only )',
+          'hide {modal name} modal ( Hide modal with that name only )',
+        ],
+      },
+    ],
+  }),
 }
 </script>

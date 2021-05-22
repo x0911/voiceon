@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="button" expanded="true" height="100px" width="100px" viewBox="0 0 100 100">
+  <circle class="innerCircle" cx="50%" cy="50%" r="25%" fill="none" stroke="#FFFFFF" stroke-width="5%">
+    <animate attributeType="SVG" attributeName="r" begin="0s" dur="1.5s" repeatCount="indefinite" from="5%" to="25%" />
+    <animate attributeType="CSS" attributeName="stroke-width" begin="0s" dur="1.5s" repeatCount="indefinite" from="3%" to="0%" />
+    <animate attributeType="CSS" attributeName="opacity" begin="0s" dur="1.5s" repeatCount="indefinite" from="1" to="0" />
+  </circle>
+  <circle class="innerCircle" cx="50%" cy="50%" r="20%" fill="none" stroke="#FFFFFF" stroke-width="5%">
+    <animate attributeType="SVG" attributeName="r" begin="0s" dur="1s" repeatCount="indefinite" from="5%" to="25%" />
+    <animate attributeType="CSS" attributeName="stroke-width" begin="0s" dur="1.5s" repeatCount="indefinite" from="3%" to="0%" />
+    <animate attributeType="CSS" attributeName="opacity" begin="0s" dur="1s" repeatCount="indefinite" from="1" to="0" />
+  </circle>
+</svg>
