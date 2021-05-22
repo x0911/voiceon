@@ -40,21 +40,27 @@
           Available Commands
         </v-subheader>
         <v-divider></v-divider>
-        <template v-for="(command, i) in commands">
-          <v-list-item :key="i" class="wrap">
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ command.name }}
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                <template v-for="(example, ei) in command.examples">
-                  <div :key="`e_${ei}`">
-                    {{ example }}
-                  </div>
-                </template>
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
+        <v-skeleton-loader
+          v-if="loadingCommands"
+          type="list-item-three-line@5"
+        ></v-skeleton-loader>
+        <template v-else>
+          <template v-for="(command, i) in commands">
+            <v-list-item :key="i" class="wrap">
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ command.name }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  <template v-for="(example, ei) in command.examples">
+                    <div :key="`e_${ei}`">
+                      {{ example }}
+                    </div>
+                  </template>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
         </template>
       </v-list>
     </v-navigation-drawer>
@@ -71,6 +77,7 @@ export default {
       mini: false,
     },
     commands: [],
+    loadingCommands: false,
   }),
   computed: {
     continuousMode() {
@@ -85,9 +92,11 @@ export default {
       this.$store.commit('options/toggleContinuousMode')
     },
     getIntents() {
+      this.$set(this, 'loadingCommands', true)
       LanguageModelService.getIntents()
         .then((data) => {
           this.$set(this, 'commands', data)
+          this.$set(this, 'loadingCommands', false)
         })
         .catch((err) => {
           console.log(err)
