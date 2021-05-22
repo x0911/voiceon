@@ -30,7 +30,7 @@
     </v-card>
     <v-fab-transition>
       <v-btn
-        v-show="!continuousMode || doCommands || tapRecording"
+        v-show="!options.continuousMode || doCommands || tapRecording"
         :disabled="interpreting"
         :color="doCommands || tapRecording ? 'error' : 'success'"
         fixed
@@ -40,7 +40,7 @@
         large
         class="white--text"
         style="z-index: 9999"
-        @click="continuousMode ? () => {} : toggleRecording()"
+        @click="options.continuousMode ? () => {} : toggleRecording()"
       >
         <v-img
           v-if="doCommands || tapRecording"
@@ -95,7 +95,6 @@ export default {
     sendHass: false,
     audioContext: null,
     doCommands: false,
-    listenSeconds: 1.5,
     listenInterval: null,
     commands: [],
     modals: {
@@ -104,12 +103,12 @@ export default {
     },
   }),
   computed: {
-    continuousMode() {
-      return this.$store.state.options.rhasspy.continuousMode
+    options() {
+      return this.$store.state.options.rhasspy
     },
   },
   watch: {
-    continuousMode(v) {
+    'options.continuousMode'(v) {
       if (v === true) {
         this.listen()
       } else {
@@ -121,7 +120,7 @@ export default {
   },
   mounted() {
     this.connectIntentSocket()
-    if (this.continuousMode) {
+    if (this.options.continuousMode) {
       this.listen()
     }
   },
@@ -156,11 +155,11 @@ export default {
     },
     listen() {
       this.startRecording()
-      const listenSeconds = this.listenSeconds
+      const listenSeconds = this.options.listenSeconds
       this.listenInterval = setInterval(() => {
         this.stopRecording()
         setTimeout(this.startRecording, 100)
-      }, listenSeconds * 1000)
+      }, listenSeconds)
     },
     handleCommand(r) {
       const {
@@ -172,14 +171,14 @@ export default {
         intent: { name: command },
       } = r.data
       if (
-        (this.doCommands || !this.continuousMode) &&
+        (this.doCommands || !this.options.continuousMode) &&
         command !== 'WakeCommand'
       ) {
         this.$set(this.commands, this.commands.length, text)
         // this.$set(this, 'doCommands', false)
         this.runCommand(command, slots, tokens)
       }
-      if (command === 'WakeCommand' && this.continuousMode) {
+      if (command === 'WakeCommand' && this.options.continuousMode) {
         this.$set(this, 'doCommands', true)
       }
       console.log(r.data)
@@ -196,6 +195,13 @@ export default {
       } else {
         this.$set(this, 'tapRecording', true)
         this.startRecording()
+        if (this.options.hasTapRecordingTimeout) {
+          const timeout = this.options.tapRecordingTimeout
+          setTimeout(
+            this.stopRecording,
+            timeout && timeout > 0 ? timeout : 2000
+          )
+        }
       }
     },
     stopRecording() {
@@ -212,7 +218,7 @@ export default {
             // console.log(request.data)
             if (
               request.data.intent.name.length > 0 &&
-              (that.continuousMode || that.tapRecording)
+              (that.options.continuousMode || that.tapRecording)
             ) {
               that.$set(that, 'tapRecording', false)
               that.handleCommand(request)

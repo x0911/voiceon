@@ -1,6 +1,68 @@
 <template>
   <div>
     <v-card tile flat>
+      <v-card-title> Options </v-card-title>
+      <v-card-text>
+        <div class="font-weight-medium secondary--text">
+          While continuous mode is ON
+        </div>
+        <div>
+          How many milliseconds should VoiceOn wait before analyzing commands?
+        </div>
+        <div>Default is: 2000</div>
+        <v-text-field
+          v-model="localOptions.listenSeconds"
+          outlined
+          class="mt-2"
+          label="eg: 2000"
+          placeholder="eg: 2000"
+          type="number"
+          single-line
+          hint="Changes take effect immediately"
+          persistent-hint
+        ></v-text-field>
+        <div class="mt-2 font-weight-medium secondary--text">
+          While continuous mode is OFF
+        </div>
+        <div>
+          Would you like to set a timeout instead of manually clicking the
+          button to stop recording command?
+        </div>
+        <div>Default is: NO</div>
+        <v-btn-toggle
+          v-model="localOptions.hasTapRecordingTimeout"
+          class="mt-2"
+          mandatory
+        >
+          <v-btn class="px-8" text active-class="success--text" :value="true">
+            YES
+          </v-btn>
+          <v-btn class="px-8" text active-class="error--text" :value="false">
+            NO
+          </v-btn>
+        </v-btn-toggle>
+        <v-slide-y-transition>
+          <div v-if="localOptions.hasTapRecordingTimeout">
+            <div class="mt-4 font-weight-medium secondary--text">
+              How many milliseconds for that timeout?
+            </div>
+            <div>Default is : 2000</div>
+            <v-text-field
+              v-model="localOptions.tapRecordingTimeout"
+              outlined
+              class="mt-2"
+              label="eg: 2000"
+              placeholder="eg: 2000"
+              type="number"
+              single-line
+              hint="Changes take effect immediately"
+              persistent-hint
+            ></v-text-field>
+          </div>
+        </v-slide-y-transition>
+      </v-card-text>
+    </v-card>
+    <v-card tile flat>
       <v-card-title class="pb-2"> Available commands </v-card-title>
       <v-card-text>
         <div>You can see <b>available commands</b> in the left sidebar</div>
@@ -47,6 +109,11 @@
 export default {
   components: {},
   data: () => ({
+    localOptions: {
+      listenSeconds: 2000,
+      hasTapRecordingTimeout: false,
+      tapRecordingTimeout: 2000,
+    },
     tips: [
       {
         title: "Say ' go home ' to navigate to home page",
@@ -79,5 +146,29 @@ export default {
       },
     ],
   }),
+  computed: {
+    options() {
+      return this.$store.state.options.rhasspy
+    },
+  },
+  watch: {
+    localOptions: {
+      handler(v) {
+        this.$store.commit('options/updatedRhasspyOptions', { ...v })
+      },
+      deep: true,
+    },
+  },
+  mounted() {
+    this.setDefaultOptions()
+  },
+  methods: {
+    setDefaultOptions() {
+      const options = { ...this.options }
+      Object.keys(options).forEach((key) => {
+        this.$set(this.localOptions, key, options[key])
+      })
+    },
+  },
 }
 </script>

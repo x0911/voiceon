@@ -14,7 +14,11 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        hid: 'description',
+        name: 'description',
+        content: process.env.npm_package_description || '',
+      },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     script: [
@@ -27,6 +31,23 @@ export default {
     ],
   },
 
+  layoutTransition: {
+    name: 'slide-up',
+    // mode: 'out-in',
+  },
+
+  pageTransition: {
+    name: 'slide-down',
+    // mode: 'in-out',
+  },
+
+  loading: {
+    color: '#1976d2',
+    failedColor: '#ff5252',
+    height: '8px',
+    continuous: true,
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['~/assets/scss'],
 
@@ -34,12 +55,17 @@ export default {
   plugins: ['~/plugins/RhasspyConnection.js', '~/plugins/VueLodash.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
+  components: false,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/eslint
-    '@nuxtjs/eslint-module',
+    [
+      '@nuxtjs/eslint-module',
+      {
+        cache: false,
+      },
+    ],
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
   ],
@@ -54,6 +80,10 @@ export default {
     '@nuxt/content',
   ],
 
+  eslint: {
+    cache: false,
+  },
+
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
 
@@ -62,6 +92,9 @@ export default {
     manifest: {
       lang: 'en',
     },
+    workbox: {
+      skipWaiting: true,
+    },
   },
 
   // Content module configuration: https://go.nuxtjs.dev/config-content
@@ -69,9 +102,20 @@ export default {
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
+    lang: {
+      current: 'en',
+    },
+    rtl: false,
+    treeShake: true,
     customVariables: ['~/assets/variables.scss'],
+    icons: {
+      iconfont: 'mdiSvg', // mdi
+    },
     theme: {
       dark: false,
+      options: {
+        customProperties: true,
+      },
       themes: {
         dark: {
           primary: colors.blue.darken2,
