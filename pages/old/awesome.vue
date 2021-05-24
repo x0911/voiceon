@@ -11,6 +11,7 @@
 
 <script>
 export default {
+  layout: 'old',
   data: () => ({}),
 }
 </script>

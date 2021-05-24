@@ -1,173 +1,125 @@
 <template>
-  <div>
-    <v-card tile flat>
-      <v-card-title> Options </v-card-title>
-      <v-card-text>
-        <div class="font-weight-medium secondary--text">
-          While continuous mode is ON
-        </div>
-        <div>
-          How many milliseconds should VoiceOn wait before analyzing commands?
-        </div>
-        <div>Default is: 2000</div>
-        <v-text-field
-          v-model="localOptions.listenSeconds"
-          outlined
-          class="mt-2"
-          label="eg: 2000"
-          placeholder="eg: 2000"
-          type="number"
-          single-line
-          hint="Changes take effect immediately"
-          persistent-hint
-        ></v-text-field>
-        <div class="mt-2 font-weight-medium secondary--text">
-          While continuous mode is OFF
-        </div>
-        <div>
-          Would you like to set a timeout instead of manually clicking the
-          button to stop recording command?
-        </div>
-        <div>Default is: NO</div>
-        <v-btn-toggle
-          v-model="localOptions.hasTapRecordingTimeout"
-          class="mt-2"
-          mandatory
+  <div class="white mb-16 pb-16">
+    <v-sheet
+      color="primary"
+      dark
+      style="position: relative"
+      class="overflow-hidden py-sm-16 pt-16"
+    >
+      <figure style="position: absolute; top: 0; left: 0; width: 60%">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          x="0px"
+          y="0px"
+          viewBox="0 0 1246 1078"
         >
-          <v-btn class="px-8" text active-class="success--text" :value="true">
-            YES
-          </v-btn>
-          <v-btn class="px-8" text active-class="error--text" :value="false">
-            NO
-          </v-btn>
-        </v-btn-toggle>
-        <v-slide-y-transition>
-          <div v-if="localOptions.hasTapRecordingTimeout">
-            <div class="mt-4 font-weight-medium secondary--text">
-              How many milliseconds for that timeout?
-            </div>
-            <div>Default is : 2000</div>
-            <v-text-field
-              v-model="localOptions.tapRecordingTimeout"
-              outlined
-              class="mt-2"
-              label="eg: 2000"
-              placeholder="eg: 2000"
-              type="number"
-              single-line
-              hint="Changes take effect immediately"
-              persistent-hint
-            ></v-text-field>
-          </div>
-        </v-slide-y-transition>
-      </v-card-text>
-    </v-card>
-    <v-card tile flat>
-      <v-card-title class="pb-2"> Available commands </v-card-title>
-      <v-card-text>
-        <div>You can see <b>available commands</b> in the left sidebar</div>
-        <div>Click on the hamburger button on the top left to toggle it</div>
-      </v-card-text>
-    </v-card>
-    <v-card tile flat>
-      <v-card-title class="pb-2"> Continuous mode </v-card-title>
-      <v-card-text>
-        <div>It is disabled by default</div>
-        <div>
-          Try the experience with VoiceOn app without the continuous mode.
-        </div>
-        <div>Then turn it on to see the difference</div>
-        <div>
-          After turning continuous mode on, you'll need to say the wake word
-        </div>
-        <div>It's ' Jarvis ', then you can begin giving commands.</div>
-      </v-card-text>
-    </v-card>
-    <v-card tile flat>
-      <v-card-title class="pb-2"> Command tips </v-card-title>
-      <v-card-text>
-        <template v-for="(tip, i) in tips">
-          <div :key="i" class="mb-3">
-            <div>
-              <span class="font-weight-medium">
-                {{ i + 1 }}.
-                {{ tip.title }}
-              </span>
-              <template v-for="(alias, ai) in tip.aliases">
-                <br :key="`alias_${ai}`" />
-                - alias : {{ alias }}
-              </template>
-            </div>
-          </div>
-        </template>
-      </v-card-text>
-    </v-card>
+          <g opacity=".4">
+            <linearGradient
+              id="doubleEllipseTopLeftID1"
+              gradientUnits="userSpaceOnUse"
+              x1="2073.5078"
+              y1="1.7251"
+              x2="2273.4375"
+              y2="1135.5818"
+              gradientTransform="matrix(-1 0 0 1 2600 0)"
+            >
+              <stop offset="0.4976" style="stop-color: #559bff"></stop>
+              <stop offset="1" style="stop-color: #377dff"></stop>
+            </linearGradient>
+            <polygon
+              fill="url(#doubleEllipseTopLeftID1)"
+              points="519.8,0.6 0,0.6 0,1078 863.4,1078   "
+            ></polygon>
+            <linearGradient
+              id="doubleEllipseTopLeftID2"
+              gradientUnits="userSpaceOnUse"
+              x1="1717.1648"
+              y1="3.779560e-05"
+              x2="1717.1648"
+              y2="644.0417"
+              gradientTransform="matrix(-1 0 0 1 2600 0)"
+            >
+              <stop offset="1.577052e-06" style="stop-color: #559bff"></stop>
+              <stop offset="1" style="stop-color: #377dff"></stop>
+            </linearGradient>
+            <polygon
+              fill="url(#doubleEllipseTopLeftID2)"
+              points="519.7,0 1039.4,0.6 1246,639.1 725.2,644   "
+            ></polygon>
+          </g>
+        </svg>
+      </figure>
+      <figure
+        v-if="$vuetify.breakpoint.smAndUp"
+        style="
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          margin-bottom: -0.5rem;
+          width: 100%;
+        "
+      >
+        <svg
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+          x="0px"
+          y="0px"
+          viewBox="0 0 1920 100.1"
+        >
+          <path fill="#fff" d="M0,0c0,0,934.4,93.4,1920,0v100.1H0L0,0z"></path>
+        </svg>
+      </figure>
+      <v-layout
+        fill-height
+        class="text-center"
+        align-center
+        justify-center
+        align-content-center
+      >
+        <v-flex xs11 sm10 md7 lg5>
+          <v-card color="transparent" flat tile class="mb-16 mt-4 mt-sm-16">
+            <h1
+              class="text-h2 text-sm-h1 font-weight-bold mb-4"
+              style="line-height: 0.75em"
+            >
+              <small> Control life with your voice </small>
+            </h1>
+            <v-card-text
+              style="font-size: 20px; line-height: 1.5em"
+              class="px-0 mb-6 white--text"
+            >
+              VoiceOn is your ullamco esse incididunt esse consectetur duis aute
+              elit velit. Pariatur laboris duis dolor veniam ex culpa et.
+            </v-card-text>
+
+            <v-card-actions class="justify-center">
+              <v-btn to="/old" x-large class="px-10" color="white" light>
+                Try VoiceOn
+              </v-btn>
+              <v-btn large class="px-5" text @click="startTour()">
+                How it works
+                <v-icon class="ms-2">mdi-play-circle</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-sheet>
+    <voiceon-tour ref="voiceonTour"></voiceon-tour>
   </div>
 </template>
 
 <script>
 export default {
-  components: {},
-  data: () => ({
-    localOptions: {
-      listenSeconds: 2000,
-      hasTapRecordingTimeout: false,
-      tapRecordingTimeout: 2000,
-    },
-    tips: [
-      {
-        title: "Say ' go home ' to navigate to home page",
-        aliases: ['go home page', 'go to home page', 'go to home'],
-      },
-      {
-        title: "Say ' go to awesome page ' to navigate to the awesome page",
-        aliases: ['go awesome page'],
-      },
-      {
-        title: "Say ' go back ' to navigate backward",
-        aliases: [],
-      },
-      {
-        title: "Say ' open login modal ' to show the login modal",
-        aliases: ['view login modal', 'show login modal'],
-      },
-      {
-        title: "Say ' open register modal ' to show the register modal",
-        aliases: ['view register modal', 'show register modal'],
-      },
-      {
-        title: "Say ' hide modal ' to hide any active modal",
-        aliases: [
-          'close modal',
-          'hide login modal ( Hide the login modal only )',
-          'hide register modal ( Hide the register modal only )',
-          'hide {modal name} modal ( Hide modal with that name only )',
-        ],
-      },
-    ],
-  }),
-  computed: {
-    options() {
-      return this.$store.state.options.rhasspy
-    },
+  components: {
+    VoiceonTour: () => import('@/components/no-auth/voiceon-tour.vue'),
   },
-  watch: {
-    localOptions: {
-      handler(v) {
-        this.$store.commit('options/updatedRhasspyOptions', { ...v })
-      },
-      deep: true,
-    },
-  },
-  mounted() {
-    this.setDefaultOptions()
-  },
+  layout: 'landing',
+  data: () => ({}),
+  mounted() {},
   methods: {
-    setDefaultOptions() {
-      const options = { ...this.options }
-      Object.keys(options).forEach((key) => {
-        this.$set(this.localOptions, key, options[key])
-      })
+    startTour() {
+      this.$refs.voiceonTour.startTour()
     },
   },
 }

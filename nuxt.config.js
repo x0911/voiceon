@@ -2,10 +2,10 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
+  ssr: true,
 
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -49,10 +49,31 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['~/assets/scss'],
+  css: ['~/assets/scss', 'vue-tour/dist/vue-tour.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/RhasspyConnection.js', '~/plugins/VueLodash.js'],
+  plugins: [
+    {
+      src: '~/plugins/vue-local-storage.js',
+      ssr: false,
+    },
+    {
+      src: '~/plugins/mixins.js',
+      ssr: false,
+    },
+    {
+      src: '~/plugins/RhasspyConnection.js',
+      ssr: false,
+    },
+    {
+      src: '~/plugins/VueLodash.js',
+      ssr: false,
+    },
+    {
+      src: '~/plugins/vue-tour.js',
+      ssr: false,
+    },
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: false,

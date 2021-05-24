@@ -16,6 +16,15 @@ export const mutations = {
       Object.keys(data).forEach((key) => {
         state.rhasspy[key] = data[key]
       })
+      localStorage.setItem(`voiceon.options`, JSON.stringify(data))
+    }
+  },
+  setDefaultValues(state, data) {
+    if (data) {
+      const jsonData = JSON.parse(data)
+      Object.keys(jsonData).forEach((key) => {
+        state.rhasspy[key] = jsonData[key]
+      })
     }
   },
 }

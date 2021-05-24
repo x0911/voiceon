@@ -36,21 +36,12 @@ module.exports = {
   },
   changeTheme(v) {
     this.$set(this.$vuetify.theme, 'dark', v)
-    this.$ls.set('voiceon-dark-theme', v)
-  },
-  switchLang() {
-    const lang = this.$i18n.locale === 'ar' ? 'en' : 'ar'
-    const r = this.switchLocalePath(lang)
-    window.location.href = r
-  },
-  changeLang(lang) {
-    this.$router.push(this.switchLocalePath(lang))
+    this.$ls.set('voiceon.dark-theme', v)
   },
   setDefaults() {
-    const lang = this.$i18n.locale
-    const darkTheme = this.$ls.get('voiceon-dark-theme', 'false')
-    this.$set(this.$vuetify.lang, 'current', lang)
-    this.$set(this.$vuetify, 'rtl', lang === 'ar')
+    const voiceonOptions = this.$ls.get('voiceon.options', null)
+    this.$store.commit('options/setDefaultValues', voiceonOptions)
+    const darkTheme = this.$ls.get('voiceon.dark-theme', 'false')
     const intval = setInterval(() => {
       clearInterval(intval)
       this.$set(this.$vuetify.theme, 'dark', darkTheme === 'true')

@@ -1,26 +1,106 @@
 <template>
   <div>
+    <v-card tile flat>
+      <v-card-title class="pb-2"> Hints </v-card-title>
+      <v-card-text>
+        <div>- Look at the bottom right button, It has 3 main states</div>
+        <div>
+          - If it is in the <b>disabled</b> state, this means that
+          <b>VoiceOn</b> has detected a voice activity and analyzing it for
+          available commands - You can <b>NOT</b> click on the button in this
+          case or give any commands
+        </div>
+        <div>
+          - If button is <b class="success--text">Green</b>, this means that
+          <b>continuous mode</b> is turned off and you can click on the button
+          to start giving commands
+        </div>
+        <div>
+          - If button is <b class="error--text">Red</b>, this means that
+          <b>VoiceOn</b> is listening for commands right now and you can click
+          on it to let <b>VoiceOn</b> analyze and run your command
+        </div>
+      </v-card-text>
+    </v-card>
+    <v-card flat tile>
+      <v-card-title> Used Commands: </v-card-title>
+      <v-card-text>
+        <pre>{{ commands }}</pre>
+      </v-card-text>
+    </v-card>
     <v-fab-transition>
-      <v-btn
-        v-show="!options.continuousMode || doCommands || tapRecording"
-        :disabled="interpreting"
-        :color="doCommands || tapRecording ? 'error' : '#00c9a7'"
-        fixed
-        bottom
-        right
-        fab
-        large
-        class="white--text"
-        style="z-index: 9999"
-        @click="options.continuousMode ? () => {} : toggleRecording()"
-      >
-        <v-img
-          v-if="doCommands || tapRecording"
-          :src="require('@/assets/media/svg/circle-pulse.svg')"
-        ></v-img>
-        <v-icon v-else>mdi-microphone</v-icon>
-      </v-btn>
+      <v-tooltip :disabled="!errors.intentSocket" top>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            v-show="
+              !options.continuousMode ||
+              doCommands ||
+              tapRecording ||
+              errors.intentSocket
+            "
+            :disabled="interpreting"
+            :color="
+              doCommands || tapRecording || errors.intentSocket
+                ? 'error'
+                : '#00c9a7'
+            "
+            fixed
+            bottom
+            right
+            fab
+            large
+            class="white--text"
+            style="z-index: 9999"
+            v-bind="attrs"
+            v-on="on"
+            @click="
+              options.continuousMode || errors.intentSocket
+                ? () => {}
+                : toggleRecording()
+            "
+          >
+            <v-img
+              v-if="doCommands || tapRecording"
+              :src="require('@/assets/media/svg/circle-pulse.svg')"
+            ></v-img>
+            <v-icon
+              v-else
+              v-text="
+                errors.intentSocket ? 'mdi-exclamation-thick' : 'mdi-microphone'
+              "
+            ></v-icon>
+          </v-btn>
+        </template>
+        <span> Error connecting to our servers </span>
+      </v-tooltip>
     </v-fab-transition>
+    <!-- Modals -->
+    <v-dialog v-model="modals.login" persistent max-width="450">
+      <v-card>
+        <v-card-title>
+          Login Modal
+          <v-spacer></v-spacer>
+          <v-btn icon @click="modals.login = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text>
+          WoW, I'm opened by your voice. You can close me by saying 'Hide Modal'
+          or by clicking the top right close button
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="modals.register" persistent max-width="450">
+      <v-card>
+        <v-card-title> Register Modal </v-card-title>
+        <v-card-text>
+          WoW, I'm opened by your voice. You can only close me by your voice,
+          Try saying 'Hide Modal' and can't be closed by other ways unlike the
+          login modal.
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <!-- ../Modals -->
   </div>
 </template>
 
@@ -42,6 +122,13 @@ export default {
     doCommands: false,
     listenInterval: null,
     commands: [],
+    modals: {
+      login: false,
+      register: false,
+    },
+    errors: {
+      intentSocket: false,
+    },
   }),
   computed: {
     options() {
@@ -50,12 +137,14 @@ export default {
   },
   watch: {
     'options.continuousMode'(v) {
-      if (v === true) {
-        this.listen()
-      } else {
-        clearInterval(this.listenInterval)
-        this.stopRecording()
-        this.$set(this, 'doCommands', false)
+      if (!this.errors.intentSocket) {
+        if (v === true) {
+          this.listen()
+        } else {
+          clearInterval(this.listenInterval)
+          this.stopRecording()
+          this.$set(this, 'doCommands', false)
+        }
       }
     },
   },
@@ -214,6 +303,9 @@ export default {
       this.intentSocket.onmessage = (evt) => {
         this.$set(this, 'jsonSource', JSON.parse(evt.data))
         this.$set(this, 'sentence', this.jsonSource.raw_text)
+      }
+      this.intentSocket.onerror = () => {
+        this.$set(this.errors, 'intentSocket', true)
       }
       this.intentSocket.onclose = () => {
         // Try to reconnect
