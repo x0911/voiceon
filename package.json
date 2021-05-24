@@ -12,7 +12,8 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
-    "lint": "yarn lint:js"
+    "lint": "yarn lint:js",
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "@nuxt/content": "^1.14.0",
@@ -40,5 +41,10 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.7.0",
     "prettier": "^2.2.1"
+  },
+  "engines": {
+    "node": "14.16.1",
+    "npm": "7.10.0",
+    "vscode": "1.56.0"
   }
 }
