@@ -27,6 +27,7 @@ export const mutations = {
       Object.keys(jsonData).forEach((key) => {
         state.rhasspy[key] = jsonData[key]
       })
+      state.rhasspy.continuousMode = false
     }
   },
 }
