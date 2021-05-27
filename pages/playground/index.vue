@@ -373,7 +373,7 @@
     <v-card tile flat class="mt-4">
       <v-card-title class="d-block pb-2"> Text to Speech API </v-card-title>
       <v-card-text>
-        <div>
+        <div class="mb-2">
           Write any text you wanna listen to, Hit the button below to let
           <b>VoiceOn</b>
           analyze your text and converts it into audio voice
