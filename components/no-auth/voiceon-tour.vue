@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog v-model="model" persistent max-width="700" scrollable>
+    <v-dialog v-model="model" persistent max-width="800" scrollable>
       <v-card>
         <v-card-title>
           How VoiceOn works?
@@ -110,11 +110,11 @@ export default {
         },
         {
           list: {
-            title: 'Try VoiceOn',
+            title: 'Start a command',
             subtitle:
-              'Click the button and try saying " Hide Modal " to hide this modal, or " Start again " to restart the tutorial',
+              'Click the button and try saying " Hide Modal " to hide this modal, " Start again " to restart the tutorial, or " Run playground " to view the playground page ',
           },
-          target: '[data-v-step="2"]',
+          target: '[data-v-step="1"]',
           content: '',
           params: {
             placement: 'top',
@@ -127,17 +127,18 @@ export default {
         },
         {
           list: {
-            title: 'Use Options',
-            subtitle: 'VoiceOn comes with several options',
+            title: 'Finish the command',
+            subtitle:
+              'Click the button again to stop the command listener, and begin analyzing the commiting your command',
           },
-          target: '[data-v-step="2"]',
+          target: '[data-v-step="1"]',
           content: '',
           params: {
             placement: 'top',
           },
           before: (type) =>
             new Promise((resolve, reject) => {
-              $this.stepUp(2)
+              $this.stepUp(3)
               resolve(true)
             }),
         },
@@ -161,7 +162,7 @@ export default {
   },
   mounted() {
     this.connectIntentSocket()
-    this.startTour()
+    // this.startTour()
   },
   methods: {
     stepUp(nextStep) {

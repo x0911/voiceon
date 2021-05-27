@@ -2,10 +2,10 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: true,
+  ssr: true, // false
 
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'server',
+  target: 'server', // static
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -73,6 +73,10 @@ export default {
       src: '~/plugins/vue-tour.js',
       ssr: false,
     },
+    // {
+    //   src: '~/plugins/Commander.js',
+    //   ssr: false,
+    // },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -153,4 +157,8 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  serverMiddleware: {
+    '/api': '~/api/index.js',
+  },
 }

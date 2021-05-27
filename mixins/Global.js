@@ -34,6 +34,16 @@ module.exports = {
       v
     )
   },
+  formatAMPM(date) {
+    let hours = date.getHours()
+    let minutes = date.getMinutes()
+    const ampm = hours >= 12 ? 'pm' : 'am'
+    hours = hours % 12
+    hours = hours && hours > 0 ? hours : 12
+    minutes = minutes < 10 ? '0' + minutes : minutes
+    const strTime = hours + ':' + minutes + ' ' + ampm
+    return strTime
+  },
   changeTheme(v) {
     this.$set(this.$vuetify.theme, 'dark', v)
     this.$ls.set('voiceon.dark-theme', v)

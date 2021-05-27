@@ -93,7 +93,7 @@
             </v-card-text>
 
             <v-card-actions class="justify-center">
-              <v-btn to="/old" x-large class="px-10" color="white" light>
+              <v-btn to="/playground" x-large class="px-10" color="white" light>
                 Try VoiceOn
               </v-btn>
               <v-btn large class="px-5" text @click="startTour()">

@@ -4,7 +4,16 @@
       <v-app-bar-nav-icon
         @click="sidenav.model = !sidenav.model"
       ></v-app-bar-nav-icon>
-      <v-toolbar-title> VoiceOn </v-toolbar-title>
+      <v-btn to="/" x-large color="transparent" tile depressed>
+        <v-toolbar-title>
+          <div class="text-center">
+            <div class="lh-1 mt-2">VoiceOn</div>
+            <div class="lh-1">
+              <small class="fs-2">Under Construction</small>
+            </div>
+          </div>
+        </v-toolbar-title>
+      </v-btn>
       <v-spacer></v-spacer>
       <v-toolbar-items class="me-2">
         <v-btn depressed @click="toggleContinuousMode()">
@@ -25,10 +34,6 @@
           </div>
         </v-btn>
       </v-toolbar-items>
-      <v-btn depressed to="/" color="#00c9a7" dark class="raised">
-        New Version
-        <v-icon class="ms-2"> mdi-keyboard-backspace mdi-rotate-180 </v-icon>
-      </v-btn>
     </v-app-bar>
     <v-navigation-drawer
       v-model="sidenav.model"

@@ -7,78 +7,26 @@
       autoplay="autoplay"
     ></audio>
     <v-fab-transition>
-      <v-tooltip :disabled="!errors.intentSocket" top>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            v-show="
-              !options.continuousMode ||
-              doCommands ||
-              tapRecording ||
-              errors.intentSocket
-            "
-            :disabled="interpreting"
-            :color="
-              doCommands || tapRecording || errors.intentSocket
-                ? 'error'
-                : '#00c9a7'
-            "
-            fixed
-            bottom
-            right
-            fab
-            large
-            class="white--text"
-            style="z-index: 9999"
-            v-bind="attrs"
-            v-on="on"
-            @click="
-              options.continuousMode || errors.intentSocket
-                ? () => {}
-                : toggleRecording()
-            "
-          >
-            <v-img
-              v-if="doCommands || tapRecording"
-              :src="require('@/assets/media/svg/circle-pulse.svg')"
-            ></v-img>
-            <v-icon
-              v-else
-              v-text="
-                errors.intentSocket ? 'mdi-exclamation-thick' : 'mdi-microphone'
-              "
-            ></v-icon>
-          </v-btn>
-        </template>
-        <span> Error connecting to our servers </span>
-      </v-tooltip>
+      <v-btn
+        v-show="!options.continuousMode || doCommands || tapRecording"
+        :disabled="interpreting"
+        :color="doCommands || tapRecording ? 'error' : '#00c9a7'"
+        fixed
+        bottom
+        right
+        fab
+        large
+        class="white--text"
+        style="z-index: 9999"
+        @click="options.continuousMode ? () => {} : toggleRecording()"
+      >
+        <v-img
+          v-if="doCommands || tapRecording"
+          :src="require('@/assets/media/svg/circle-pulse.svg')"
+        ></v-img>
+        <v-icon v-else>mdi-microphone</v-icon>
+      </v-btn>
     </v-fab-transition>
-    <!-- Modals -->
-    <v-dialog v-model="modals.login" persistent max-width="450">
-      <v-card>
-        <v-card-title>
-          Login Modal
-          <v-spacer></v-spacer>
-          <v-btn icon @click="modals.login = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card-text>
-          WoW, I'm opened by your voice. You can close me by saying 'Hide Modal'
-          or by clicking the top right close button
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="modals.register" persistent max-width="450">
-      <v-card>
-        <v-card-title> Register Modal </v-card-title>
-        <v-card-text>
-          WoW, I'm opened by your voice. You can only close me by your voice,
-          Try saying 'Hide Modal' and can't be closed by other ways unlike the
-          login modal.
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-    <!-- ../Modals -->
   </div>
 </template>
 
@@ -100,13 +48,6 @@ export default {
     doCommands: false,
     listenInterval: null,
     commands: [],
-    modals: {
-      login: false,
-      register: false,
-    },
-    errors: {
-      intentSocket: false,
-    },
   }),
   computed: {
     options() {
@@ -115,14 +56,12 @@ export default {
   },
   watch: {
     'options.continuousMode'(v) {
-      if (!this.errors.intentSocket) {
-        if (v === true) {
-          this.listen()
-        } else {
-          clearInterval(this.listenInterval)
-          this.stopRecording()
-          this.$set(this, 'doCommands', false)
-        }
+      if (v === true) {
+        this.listen()
+      } else {
+        clearInterval(this.listenInterval)
+        this.stopRecording()
+        this.$set(this, 'doCommands', false)
       }
     },
   },
@@ -161,22 +100,6 @@ export default {
             this.$set(this.modals, modal, false)
           })
           break
-        case 'GetNews':
-          this.textToSpeech({
-            text: 'Hello; Here is the big news; The official FIFA World Cup Qatar 20 22 will be held on November',
-          })
-          break
-        case 'GetTime':
-          {
-            const time = this.formatAMPM(new Date())
-            this.textToSpeech({
-              text: `Hello; Time now is; ${time}`,
-            })
-          }
-          break
-        default:
-          this.$emit('run-command', { command, slots, tokens })
-          break
       }
     },
     listen() {
@@ -197,17 +120,17 @@ export default {
         intent: { name: command },
       } = r.data
       if (
-        // (this.doCommands || !this.options.continuousMode) &&
+        (this.doCommands || !this.options.continuousMode) &&
         command !== 'WakeCommand'
       ) {
         this.$set(this.commands, this.commands.length, text)
         // this.$set(this, 'doCommands', false)
         this.runCommand(command, slots, tokens)
       }
-      // if (command === 'WakeCommand' && this.options.continuousMode) {
-      //   this.$set(this, 'doCommands', true)
-      // }
-      // console.log(r.data)
+      if (command === 'WakeCommand' && this.options.continuousMode) {
+        this.$set(this, 'doCommands', true)
+      }
+      console.log(r.data)
     },
     beginAsync() {
       this.$set(this, 'loading', true)
@@ -243,16 +166,16 @@ export default {
         TranscribeService.transcribeWav(blob, that.sendHass)
           .then((request) => {
             // const confidence = request.data.speech_confidence
-            console.log(request.data)
+            // console.log(request.data)
             if (
               request.data.intent.name.length > 0 &&
               (that.options.continuousMode || that.tapRecording)
             ) {
+              that.$set(that, 'tapRecording', false)
               that.handleCommand(request)
             } else {
               that.$set(that, 'doCommands', false)
             }
-            that.$set(that, 'tapRecording', false)
           })
           .catch((err) => {
             console.log(err)
@@ -301,9 +224,6 @@ export default {
       this.intentSocket.onmessage = (evt) => {
         this.$set(this, 'jsonSource', JSON.parse(evt.data))
         this.$set(this, 'sentence', this.jsonSource.raw_text)
-      }
-      this.intentSocket.onerror = () => {
-        this.$set(this.errors, 'intentSocket', true)
       }
       this.intentSocket.onclose = () => {
         // Try to reconnect

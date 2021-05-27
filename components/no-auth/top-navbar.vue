@@ -4,7 +4,7 @@
       <v-toolbar-title> VoiceOn </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn depressed to="/old"> Old Version </v-btn>
+        <v-btn depressed to="/playground"> Playground </v-btn>
       </v-toolbar-items>
     </v-app-bar>
   </div>

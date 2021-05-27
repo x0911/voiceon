@@ -1,33 +1,11 @@
 <template>
   <div>
-    <v-card tile flat>
-      <v-card-title class="pb-2"> Hints </v-card-title>
-      <v-card-text>
-        <div>- Look at the bottom right button, It has 3 main states</div>
-        <div>
-          - If it is in the <b>disabled</b> state, this means that
-          <b>VoiceOn</b> has detected a voice activity and analyzing it for
-          available commands - You can <b>NOT</b> click on the button in this
-          case or give any commands
-        </div>
-        <div>
-          - If button is <b class="success--text">Green</b>, this means that
-          <b>continuous mode</b> is turned off and you can click on the button
-          to start giving commands
-        </div>
-        <div>
-          - If button is <b class="error--text">Red</b>, this means that
-          <b>VoiceOn</b> is listening for commands right now and you can click
-          on it to let <b>VoiceOn</b> analyze and run your command
-        </div>
-      </v-card-text>
-    </v-card>
-    <v-card flat tile>
-      <v-card-title> Used Commands: </v-card-title>
-      <v-card-text>
-        <pre>{{ commands }}</pre>
-      </v-card-text>
-    </v-card>
+    <audio
+      id="voiceon-audio-player"
+      hidden
+      class="d-none"
+      autoplay="autoplay"
+    ></audio>
     <v-fab-transition>
       <v-tooltip :disabled="!errors.intentSocket" top>
         <template #activator="{ on, attrs }">
@@ -164,9 +142,11 @@ export default {
           {
             const goTo = slots.name
             if (goTo.includes('home')) {
-              this.$router.push('/old')
+              this.$router.push('/')
+            } else if (goTo.includes('playground')) {
+              this.$router.push('/playground')
             } else if (goTo.includes('awesome page')) {
-              this.$router.push('/old/awesome')
+              this.$router.push('/playground/awesome')
             }
           }
           break
@@ -180,6 +160,22 @@ export default {
           Object.keys(this.modals).forEach((modal) => {
             this.$set(this.modals, modal, false)
           })
+          break
+        case 'GetNews':
+          this.textToSpeech({
+            text: 'Hello; Here is the big news; The official FIFA World Cup Qatar 20 22 will be held on November',
+          })
+          break
+        case 'GetTime':
+          {
+            const time = this.formatAMPM(new Date())
+            this.textToSpeech({
+              text: `Hello; Time now is; ${time}`,
+            })
+          }
+          break
+        default:
+          this.$emit('run-command', { command, slots, tokens })
           break
       }
     },
@@ -201,17 +197,17 @@ export default {
         intent: { name: command },
       } = r.data
       if (
-        (this.doCommands || !this.options.continuousMode) &&
+        // (this.doCommands || !this.options.continuousMode) &&
         command !== 'WakeCommand'
       ) {
         this.$set(this.commands, this.commands.length, text)
         // this.$set(this, 'doCommands', false)
         this.runCommand(command, slots, tokens)
       }
-      if (command === 'WakeCommand' && this.options.continuousMode) {
-        this.$set(this, 'doCommands', true)
-      }
-      console.log(r.data)
+      // if (command === 'WakeCommand' && this.options.continuousMode) {
+      //   this.$set(this, 'doCommands', true)
+      // }
+      // console.log(r.data)
     },
     beginAsync() {
       this.$set(this, 'loading', true)
@@ -229,7 +225,9 @@ export default {
           const timeout = this.options.tapRecordingTimeout
           setTimeout(
             this.stopRecording,
-            timeout && timeout > 0 ? timeout : 2000
+            timeout && timeout > 0
+              ? timeout
+              : this.options.defaultTabRecordingTimeout
           )
         }
       }
@@ -245,16 +243,16 @@ export default {
         TranscribeService.transcribeWav(blob, that.sendHass)
           .then((request) => {
             // const confidence = request.data.speech_confidence
-            // console.log(request.data)
+            console.log(request.data)
             if (
               request.data.intent.name.length > 0 &&
               (that.options.continuousMode || that.tapRecording)
             ) {
-              that.$set(that, 'tapRecording', false)
               that.handleCommand(request)
             } else {
               that.$set(that, 'doCommands', false)
             }
+            that.$set(that, 'tapRecording', false)
           })
           .catch((err) => {
             console.log(err)
