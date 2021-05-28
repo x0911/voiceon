@@ -495,43 +495,38 @@ export default {
       textToSpeech: '',
     },
     localOptions: {
-      listenSeconds: 2500,
+      listenSeconds: 2000,
       hasTapRecordingTimeout: false,
-      tapRecordingTimeout: 1500,
+      tapRecordingTimeout: 2500,
     },
     tips: [
       {
-        title: "Say ' jenny go home ' to navigate to home page",
-        aliases: [
-          'jenny go home page',
-          'jenny go to home page',
-          'jenny go to home',
-        ],
+        title: "Say ' go home ' to navigate to home page",
+        aliases: ['go home page', 'go to home page', 'go to home'],
       },
       {
-        title:
-          "Say ' jenny go to awesome page ' to navigate to the awesome page",
-        aliases: ['jenny go awesome page'],
+        title: "Say ' go to awesome page ' to navigate to the awesome page",
+        aliases: ['go awesome page'],
       },
       {
-        title: "Say ' jenny go back ' to navigate backward",
+        title: "Say ' go back ' to navigate backward",
         aliases: [],
       },
       {
-        title: "Say ' jenny open login modal ' to show the login modal",
-        aliases: ['jenny view login modal', 'jenny show login modal'],
+        title: "Say ' open login modal ' to show the login modal",
+        aliases: ['view login modal', 'show login modal'],
       },
       {
-        title: "Say ' jenny open register modal ' to show the register modal",
-        aliases: ['jenny view register modal', 'jenny show register modal'],
+        title: "Say ' open register modal ' to show the register modal",
+        aliases: ['view register modal', 'show register modal'],
       },
       {
-        title: "Say ' jenny hide modal ' to hide any active modal",
+        title: "Say ' hide modal ' to hide any active modal",
         aliases: [
-          'jenny close modal',
-          'jenny hide login modal ( Hide the login modal only )',
-          'jenny hide register modal ( Hide the register modal only )',
-          'jenny hide {modal name} modal ( Hide modal with that name only )',
+          'close modal',
+          'hide login modal ( Hide the login modal only )',
+          'hide register modal ( Hide the register modal only )',
+          'hide {modal name} modal ( Hide modal with that name only )',
         ],
       },
     ],

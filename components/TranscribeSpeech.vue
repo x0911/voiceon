@@ -197,16 +197,16 @@ export default {
         intent: { name: command },
       } = r.data
       if (
-        // (this.doCommands || !this.options.continuousMode) &&
+        (this.doCommands || !this.options.continuousMode) &&
         command !== 'WakeCommand'
       ) {
         this.$set(this.commands, this.commands.length, text)
-        // this.$set(this, 'doCommands', false)
+        this.$set(this, 'doCommands', false)
         this.runCommand(command, slots, tokens)
       }
-      // if (command === 'WakeCommand' && this.options.continuousMode) {
-      //   this.$set(this, 'doCommands', true)
-      // }
+      if (command === 'WakeCommand' && this.options.continuousMode) {
+        this.$set(this, 'doCommands', true)
+      }
       // console.log(r.data)
     },
     beginAsync() {

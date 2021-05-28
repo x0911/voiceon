@@ -4,7 +4,7 @@
       <v-card-title class="d-block pb-2">
         Hello, I'm navigated by your voice!
       </v-card-title>
-      <v-card-text> To go back, say ' <b>Jenny Go back</b> ' </v-card-text>
+      <v-card-text> To go back, say ' <b>Go back</b> ' </v-card-text>
     </v-card>
     <transcribe-speech></transcribe-speech>
   </div>
