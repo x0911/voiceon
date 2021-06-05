@@ -5,7 +5,7 @@
       <v-container>
         <nuxt />
       </v-container>
-      <transcribe-speech></transcribe-speech>
+      <!-- <transcribe-speech></transcribe-speech> -->
     </v-main>
   </v-app>
 </template>
@@ -14,7 +14,7 @@
 export default {
   components: {
     AppTopNavbar: () => import('@/components/no-auth/top-navbar.vue'),
-    TranscribeSpeech: () => import('~/components/TranscribeSpeech.vue'),
+    // TranscribeSpeech: () => import('~/components/TranscribeSpeech.vue'),
   },
   data: () => ({}),
   mounted() {

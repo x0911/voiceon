@@ -1,16 +1,71 @@
 <template>
   <div>
-    <!-- <v-card tile flat>
-      <v-card-title> Modes </v-card-title>
+    <v-card tile flat>
+      <v-card-title> Breaking Changes </v-card-title>
       <v-card-text>
-        <b>VoiceOn</b> comes with 2 modes
-        <div class="font-weight-medium secondary--text">Continuous mode</div>
-        <div>
-          You don't need to use a command button to give a command,
-          <b>VoiceOn</b> will listen
-        </div>
+        <v-list>
+          <v-list-item class="wrap">
+            <v-list-item-icon>
+              <v-icon color="#00c9a7">mdi-numeric-1-circle</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title> Slower but more accurate </v-list-item-title>
+              <v-list-item-subtitle>
+                <div class="lh-1-5">
+                  <div>
+                    <div
+                      style="
+                        width: 50px;
+                        height: 3px;
+                        background-color: #00c9a7;
+                      "
+                      class="mt-1 mb-2"
+                    ></div>
+                  </div>
+                  <div>
+                    While on <b>Continuous Mode</b>, If you gave a command,
+                    <b>VoiceOn</b> will wait to analyze that command before
+                    beginning to listen to another one.
+                  </div>
+                  <div>
+                    This change will prevent accedently run untold commands. It
+                    fixed the " News " bug, "Go back" bug, and "Go home" bug
+                  </div>
+                  <div>This will make <b>VoiceOn</b> slower but accurate.</div>
+                </div>
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="wrap">
+            <v-list-item-icon>
+              <v-icon color="#00c9a7">mdi-numeric-2-circle</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title> No wake command! </v-list-item-title>
+              <v-list-item-subtitle>
+                <div class="lh-1-5">
+                  <div>
+                    <div
+                      style="
+                        width: 50px;
+                        height: 3px;
+                        background-color: #00c9a7;
+                      "
+                      class="mt-1 mb-2"
+                    ></div>
+                  </div>
+                  <div>
+                    Just for testing, We'll run the
+                    <b>Continuous Mode</b> without a wake command using
+                    <b>Kaldi</b> mode <b>ARPA</b>
+                  </div>
+                </div>
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
       </v-card-text>
-    </v-card> -->
+    </v-card>
     <v-card tile flat>
       <v-card-title> Options </v-card-title>
       <v-card-text>
@@ -466,6 +521,33 @@
         </div>
       </v-card-text>
     </v-card>
+    <!-- Modals -->
+    <v-dialog v-model="modals.login" persistent max-width="450">
+      <v-card>
+        <v-card-title>
+          Login Modal
+          <v-spacer></v-spacer>
+          <v-btn icon @click="modals.login = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text>
+          WoW, I'm opened by your voice. You can close me by saying 'Hide Modal'
+          or by clicking the top right close button
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="modals.register" persistent max-width="450">
+      <v-card>
+        <v-card-title> Register Modal </v-card-title>
+        <v-card-text>
+          WoW, I'm opened by your voice. You can only close me by your voice,
+          Try saying 'Hide Modal' and can't be closed by other ways unlike the
+          login modal.
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <!-- ../Modals -->
     <transcribe-speech @run-command="runCommand"></transcribe-speech>
   </div>
 </template>
@@ -478,6 +560,10 @@ export default {
   },
   layout: 'playground',
   data: () => ({
+    modals: {
+      login: false,
+      register: false,
+    },
     api: {
       hidePassword: true,
       step: 1,
@@ -495,9 +581,9 @@ export default {
       textToSpeech: '',
     },
     localOptions: {
-      listenSeconds: 2000,
+      listenSeconds: 3000,
       hasTapRecordingTimeout: false,
-      tapRecordingTimeout: 2500,
+      tapRecordingTimeout: 3000,
     },
     tips: [
       {
@@ -550,6 +636,17 @@ export default {
   methods: {
     runCommand({ command, slots, tokens }) {
       switch (command) {
+        case 'OpenModal':
+          this.$set(this.modals, slots.name, true)
+          break
+        case 'HideModal':
+          this.$set(this.modals, slots.name, false)
+          break
+        case 'HideAnyModal':
+          Object.keys(this.modals).forEach((modal) => {
+            this.$set(this.modals, modal, false)
+          })
+          break
         case 'ShowHidePassword':
           this.$set(this.api, 'hidePassword', slots.action === 'hide')
           break

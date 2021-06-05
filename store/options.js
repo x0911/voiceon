@@ -1,11 +1,11 @@
 export const state = () => ({
   rhasspy: {
     continuousMode: false,
-    listenSeconds: 2000,
-    defaultListenSeconds: 2000,
+    listenSeconds: 3000,
+    defaultListenSeconds: 3000,
     hasTapRecordingTimeout: false,
-    tapRecordingTimeout: 2500,
-    defaultTabRecordingTimeout: 2500,
+    tapRecordingTimeout: 3000,
+    defaultTabRecordingTimeout: 3000,
   },
 })
 

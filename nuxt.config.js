@@ -73,6 +73,10 @@ export default {
       src: '~/plugins/vue-tour.js',
       ssr: false,
     },
+    {
+      src: '~/plugins/vue-awesome-countdown.js',
+      ssr: false,
+    },
     // {
     //   src: '~/plugins/Commander.js',
     //   ssr: false,
