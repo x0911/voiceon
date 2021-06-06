@@ -1,7 +1,7 @@
 /**
  * ? I've forked vue-socket.io-extended which is a fork from vue-socket.io
  * ? I'll use the root structure for vue-socket.io-extended to build a new package
- * ? This package triggers Rhasspy with Vue.js applications
+ * ? This package helps Vue.js applications connect with Rhasspy better
  */
 
 import Vue from 'vue'
