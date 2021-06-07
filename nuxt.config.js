@@ -173,10 +173,10 @@ export default {
   server: {
     https: {
       key: fs.readFileSync(
-        path.resolve('/etc/letsencrypt/live/voice.mmw.pw/privkey.pem')
+        path.resolve(__dirname, 'https/voice.mmw.pw/privkey.pem')
       ),
       cert: fs.readFileSync(
-        path.resolve('/etc/letsencrypt/live/voice.mmw.pw/cert.pem')
+        path.resolve(__dirname, 'https/voice.mmw.pw/cert.pem')
       ),
     },
   },
