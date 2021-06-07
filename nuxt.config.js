@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import colors from 'vuetify/es5/util/colors'
 
 export default {
@@ -167,6 +169,17 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  server: {
+    https: {
+      key: fs.readFileSync(
+        path.resolve('/etc/letsencrypt/live/voice.mmw.pw/privkey.pem')
+      ),
+      cert: fs.readFileSync(
+        path.resolve('/etc/letsencrypt/live/voice.mmw.pw/cert.pem')
+      ),
+    },
+  },
 
   serverMiddleware: {
     '/api': '~/api/index.js',
