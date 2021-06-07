@@ -7,6 +7,9 @@ app.use(bodyParser.json())
 const getUserData = require('./get-user-data')
 app.use(getUserData)
 
+const updateUserData = require('./update-user-data')
+app.use(updateUserData)
+
 if (require.main === module) {
   const port = 3001
   app.listen(port, () => {

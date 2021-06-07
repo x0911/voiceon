@@ -7,6 +7,12 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'server', // static
 
+  env: {
+    HOST: '0.0.0.0',
+    NODE_ENV: 'production',
+    NPM_CONFIG_PRODUCTION: false,
+  },
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - VoiceOn',
