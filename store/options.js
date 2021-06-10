@@ -6,6 +6,8 @@ export const state = () => ({
     hasTapRecordingTimeout: false,
     tapRecordingTimeout: 3000,
     defaultTabRecordingTimeout: 3000,
+    minVolume: 9,
+    defaultMinVolume: 9,
   },
 })
 

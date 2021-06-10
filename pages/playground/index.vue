@@ -87,6 +87,27 @@
           hint="Changes take effect immediately"
           persistent-hint
         ></v-text-field>
+        <div class="font-weight-bold">
+          How much your voice should be laud to begin listening and analyzing
+          your commands?
+        </div>
+        <div>
+          If you gonna lower this value, <b>VoiceOn</b> may listen to every
+          voice around you, even the ant sound walking on your table and analyze
+          it into commands :"D
+        </div>
+        <div>Default is: {{ options.defaultMinVolume }}</div>
+        <v-text-field
+          v-model="localOptions.minVolume"
+          outlined
+          class="mt-2"
+          :label="`eg: ${options.defaultMinVolume}`"
+          :placeholder="`eg: ${options.defaultMinVolume}`"
+          type="number"
+          single-line
+          hint="Changes take effect immediately"
+          persistent-hint
+        ></v-text-field>
         <div class="mt-2 font-weight-medium secondary--text">
           While continuous mode is OFF
         </div>
@@ -584,6 +605,7 @@ export default {
       listenSeconds: 3000,
       hasTapRecordingTimeout: false,
       tapRecordingTimeout: 3000,
+      minVolume: 0.12,
     },
     tips: [
       {

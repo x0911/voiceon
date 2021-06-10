@@ -108,6 +108,17 @@ export default {
       intentSocket: false,
     },
     timerEndTime: null,
+    // Audio Visual
+    // audioContext = null, // Used above
+    stream: null,
+    mediaStreamSource: null,
+    meter: null,
+    canvasContext: null,
+    WIDTH: 500,
+    HEIGHT: 50,
+    rafID: null,
+    volume: 0,
+    volumesInSession: [],
   }),
   computed: {
     options() {
@@ -134,6 +145,51 @@ export default {
     }
   },
   methods: {
+    getMicrophonePermission() {
+      return new Promise((resolve, reject) => {
+        const $this = this
+        if (!this.audioContext) {
+          this.audioContext = new AudioContext()
+        }
+        if (this.mediaStreamSource !== null && this.recorder !== null) {
+          resolve(true)
+          return
+        }
+        // navigator.getUserMedia =
+        //   navigator.getUserMedia ||
+        //   navigator.webkitGetUserMedia ||
+        //   navigator.mozGetUserMedia
+        navigator.mediaDevices
+          .getUserMedia({
+            audio: true,
+          })
+          .then((stream) => {
+            $this.$set($this, 'stream', stream)
+            $this.mediaStreamSource =
+              $this.audioContext.createMediaStreamSource(stream)
+            // eslint-disable-next-line no-undef
+            $this.recorder = new Recorder($this.mediaStreamSource)
+            // eslint-disable-next-line no-undef
+            $this.meter = createAudioMeter($this.audioContext)
+            $this.mediaStreamSource.connect($this.meter)
+            $this.drawLoop()
+            resolve(true)
+          })
+      })
+    },
+    drawLoop() {
+      // Can pass 'time' as an optional parameter
+      if (this.meter.checkClipping()) {
+        // Very loud sound
+      }
+      this.$set(this, 'volume', this.meter.volume)
+      this.$set(
+        this.volumesInSession,
+        this.volumesInSession.length,
+        this.meter.volume
+      )
+      this.rafID = window.requestAnimationFrame(this.drawLoop)
+    },
     runCommand(command, slots, tokens) {
       switch (command) {
         case 'NavigateBackward':
@@ -234,8 +290,13 @@ export default {
       }, 2000)
     },
     stopRecording() {
-      this.setTimerEndTime(0)
       this.recorder.stop()
+      const volumesSession = [...this.volumesInSession]
+      const getAverage = (arr) => arr.reduce((a, b) => a + b) / arr.length
+      const average = getAverage(volumesSession)
+      const minVolume = this.options.minVolume / 100
+      const laudEnough = average >= minVolume
+      this.setTimerEndTime(0, true)
       // Export recording data
       const that = this
       that.$set(that, 'interpreting', true)
@@ -244,13 +305,17 @@ export default {
         TranscribeService.transcribeWav(blob, that.sendHass)
           .then((request) => {
             // const confidence = request.data.speech_confidence
-            console.log(request.data)
-            that.pushCommand(request.data.text)
+            if (laudEnough) {
+              console.log(request.data)
+              that.pushCommand(request.data.text)
+            }
             if (
               request.data.intent.name.length > 0 &&
               (that.options.continuousMode || that.tapRecording)
             ) {
-              that.handleCommand(request)
+              if (laudEnough) {
+                that.handleCommand(request)
+              }
             } else {
               that.$set(that, 'doCommands', false)
             }
@@ -266,16 +331,19 @@ export default {
           })
       })
     },
-    setTimerEndTime(seconds) {
+    setTimerEndTime(seconds, resetVolumesSession = false) {
       this.$set(
         this,
         'timerEndTime',
         seconds > 0 ? Number(new Date().getTime() + Number(seconds)) : null
       )
+      if (resetVolumesSession) {
+        this.$set(this, 'volumesInSession', [])
+      }
     },
     async startRecording() {
       if (this.options.continuousMode) {
-        this.setTimerEndTime(this.options.listenSeconds)
+        this.setTimerEndTime(this.options.listenSeconds, true)
       } else if (this.options.hasTapRecordingTimeout) {
         this.setTimerEndTime(this.options.tapRecordingTimeout)
       } else {
@@ -288,27 +356,6 @@ export default {
       } else {
         console.log('Need permission to access Microphone')
       }
-    },
-    getMicrophonePermission() {
-      // Request microphone permissions
-      return new Promise((resolve, reject) => {
-        if (this.audioContext == null) {
-          this.audioContext = new AudioContext()
-        }
-        if (this.recorder == null) {
-          const that = this
-          navigator.mediaDevices
-            .getUserMedia({ audio: true })
-            .then(function (stream) {
-              const input = that.audioContext.createMediaStreamSource(stream)
-              // eslint-disable-next-line no-undef
-              that.recorder = new Recorder(input)
-              resolve(true)
-            })
-        } else {
-          resolve(true)
-        }
-      })
     },
     connectIntentSocket() {
       const { wsURL: url } = require('@/assets/api-url.js')
