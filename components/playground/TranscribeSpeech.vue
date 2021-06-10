@@ -291,11 +291,14 @@ export default {
     },
     stopRecording() {
       this.recorder.stop()
-      const volumesSession = [...this.volumesInSession]
-      const getAverage = (arr) => arr.reduce((a, b) => a + b) / arr.length
-      const average = getAverage(volumesSession)
-      const minVolume = this.options.minVolume / 100
-      const laudEnough = average >= minVolume
+      let laudEnough = true
+      if (this.options.continuousMode) {
+        const volumesSession = [...this.volumesInSession]
+        const getAverage = (arr) => arr.reduce((a, b) => a + b) / arr.length
+        const average = getAverage(volumesSession)
+        const minVolume = this.options.minVolume / 100
+        laudEnough = average >= minVolume
+      }
       this.setTimerEndTime(0, true)
       // Export recording data
       const that = this
