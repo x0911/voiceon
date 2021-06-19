@@ -42,7 +42,7 @@ module.exports = {
       formData.append('audio_data', blob, time)
       const config = {
         method: 'post',
-        url: `${options.baseURL}/`,
+        url: `${options.baseURL}`,
         headers: {
           Accept: 'application/json',
         },
