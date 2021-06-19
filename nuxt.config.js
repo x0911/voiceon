@@ -1,5 +1,5 @@
-import fs from 'fs'
-import path from 'path'
+// import fs from 'fs'
+// import path from 'path'
 import colors from 'vuetify/es5/util/colors'
 
 export default {
@@ -176,18 +176,18 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 
-  server: {
-    https: {
-      key: fs.readFileSync(
-        // path.resolve(__dirname, 'https/voice.mmw.pw/privkey.pem') // For my PC
-        path.resolve('/etc/letsencrypt/live/voice.mmw.pw/privkey.pem') // For SSH Machine
-      ),
-      cert: fs.readFileSync(
-        // path.resolve(__dirname, 'https/voice.mmw.pw/cert.pem') // For my PC
-        path.resolve('/etc/letsencrypt/live/voice.mmw.pw/cert.pem') // For SSH Machine
-      ),
-    },
-  },
+  // server: {
+  //   https: {
+  //     key: fs.readFileSync(
+  //       // path.resolve(__dirname, 'https/voice.mmw.pw/privkey.pem') // For my PC
+  //       path.resolve('/etc/letsencrypt/live/voice.mmw.pw/privkey.pem') // For SSH Machine
+  //     ),
+  //     cert: fs.readFileSync(
+  //       // path.resolve(__dirname, 'https/voice.mmw.pw/cert.pem') // For my PC
+  //       path.resolve('/etc/letsencrypt/live/voice.mmw.pw/cert.pem') // For SSH Machine
+  //     ),
+  //   },
+  // },
 
   serverMiddleware: {
     '/api': '~/api/index.js',
