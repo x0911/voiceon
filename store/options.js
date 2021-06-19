@@ -9,6 +9,7 @@ export const state = () => ({
     minVolume: 9,
     defaultMinVolume: 9,
   },
+  speechToText: '',
 })
 
 export const mutations = {
@@ -31,5 +32,8 @@ export const mutations = {
       })
       state.rhasspy.continuousMode = false
     }
+  },
+  speechToText(state, text) {
+    state.speechToText = text
   },
 }

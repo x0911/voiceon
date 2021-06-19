@@ -37,7 +37,7 @@
                 : toggleRecording()
             "
           >
-            <no-ssr v-if="timerEndTime && timerEndTime > 0">
+            <client-only v-if="timerEndTime && timerEndTime > 0">
               <vac :end-time="timerEndTime">
                 <template #process="{ timeObj }">
                   <span class="fs-14">
@@ -45,7 +45,7 @@
                   </span>
                 </template>
               </vac>
-            </no-ssr>
+            </client-only>
             <v-img
               v-else-if="doCommands || tapRecording"
               :src="require('@/assets/media/svg/circle-pulse.svg')"
@@ -134,6 +134,7 @@ export default {
           clearInterval(this.listenInterval)
           this.stopRecording()
           this.$set(this, 'doCommands', false)
+          this.stopMicAccess()
         }
       }
     },
@@ -146,19 +147,13 @@ export default {
   },
   methods: {
     getMicrophonePermission() {
+      this.$set(this, 'audioContext', null)
+      this.$set(this, 'mediaStreamSource', null)
+      this.$set(this, 'recorder', null)
+      this.$set(this, 'meter', null)
       return new Promise((resolve, reject) => {
         const $this = this
-        if (!this.audioContext) {
-          this.audioContext = new AudioContext()
-        }
-        if (this.mediaStreamSource !== null && this.recorder !== null) {
-          resolve(true)
-          return
-        }
-        // navigator.getUserMedia =
-        //   navigator.getUserMedia ||
-        //   navigator.webkitGetUserMedia ||
-        //   navigator.mozGetUserMedia
+        this.audioContext = new AudioContext()
         navigator.mediaDevices
           .getUserMedia({
             audio: true,
@@ -179,16 +174,18 @@ export default {
     },
     drawLoop() {
       // Can pass 'time' as an optional parameter
-      if (this.meter.checkClipping()) {
-        // Very loud sound
+      if (this.meter) {
+        if (this.meter.checkClipping()) {
+          // Very loud sound
+        }
+        this.$set(this, 'volume', this.meter.volume)
+        this.$set(
+          this.volumesInSession,
+          this.volumesInSession.length,
+          this.meter.volume
+        )
+        this.rafID = window.requestAnimationFrame(this.drawLoop)
       }
-      this.$set(this, 'volume', this.meter.volume)
-      this.$set(
-        this.volumesInSession,
-        this.volumesInSession.length,
-        this.meter.volume
-      )
-      this.rafID = window.requestAnimationFrame(this.drawLoop)
     },
     runCommand(command, slots, tokens) {
       switch (command) {
@@ -289,6 +286,11 @@ export default {
         this.$set(this, 'showLastCommand', false)
       }, 2000)
     },
+    stopMicAccess() {
+      if (this.stream) {
+        this.stream.getAudioTracks()[0].stop()
+      }
+    },
     stopRecording() {
       this.recorder.stop()
       let laudEnough = true
@@ -298,6 +300,8 @@ export default {
         const average = getAverage(volumesSession)
         const minVolume = this.options.minVolume / 100
         laudEnough = average >= minVolume
+      } else {
+        this.stopMicAccess()
       }
       this.setTimerEndTime(0, true)
       // Export recording data
@@ -332,6 +336,9 @@ export default {
             that.$set(that, 'interpreting', false)
             that.endAsync()
           })
+        // const text = await that.speechToText(blob)
+        // const prevText = that.$store.state.options.speechToText + ' | ' + text
+        // that.$store.commit('options/speechToText', prevText)
       })
     },
     setTimerEndTime(seconds, resetVolumesSession = false) {

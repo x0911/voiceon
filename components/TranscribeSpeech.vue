@@ -37,7 +37,7 @@
                 : toggleRecording()
             "
           >
-            <no-ssr v-if="timerEndTime && timerEndTime > 0">
+            <client-only v-if="timerEndTime && timerEndTime > 0">
               <vac :end-time="timerEndTime">
                 <template #process="{ timeObj }">
                   <span class="fs-14">
@@ -45,7 +45,7 @@
                   </span>
                 </template>
               </vac>
-            </no-ssr>
+            </client-only>
             <v-img
               v-else-if="doCommands || tapRecording"
               :src="require('@/assets/media/svg/circle-pulse.svg')"

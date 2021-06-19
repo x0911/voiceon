@@ -486,11 +486,13 @@
           button again to let <b>VoiceOn</b>
           analyze your speech and converts it into text
         </div>
-        <div v-if="api.speechToText" class="my-4">
+        <div class="my-4">
           <v-divider class="my-1"></v-divider>
-          <div class="mb-2 error--text font-weight-bold">Converted Text</div>
+          <div class="mb-2 font-weight-bold">
+            Converted Text will show below
+          </div>
           <div>
-            {{ api.speechToText }}
+            {{ speechToTextObj.text }}
           </div>
           <v-divider class="my-1"></v-divider>
         </div>
@@ -499,13 +501,13 @@
             class="px-6 white--text"
             large
             :color="speechToTextObj.recording ? 'error' : '#00c9a7'"
-            :disabled="speechToTextObj.transcripting || true"
+            :disabled="speechToTextObj.transcripting"
             @click="
               speechToTextObj.recording
-                ? endSpeechToText()
+                ? localSpeechToText().stop(true)
                 : speechToTextObj.transcripting
                 ? () => {}
-                : startSpeechToText()
+                : localSpeechToText().start()
             "
           >
             <v-icon class="me-2"
@@ -513,9 +515,6 @@
             >
             {{ speechToTextObj.recording ? 'Stop' : 'Start' }}
           </v-btn>
-          <span class="d-inline-block ms-2 font-weight-bold error--text">
-            This API is not stable yet
-          </span>
         </div>
       </v-card-text>
     </v-card>
@@ -588,11 +587,16 @@ export default {
     api: {
       hidePassword: true,
       step: 1,
-      speechToText: '',
     },
+    recorder: null,
+    stream: null,
+    audioContext: null,
+    mediaStreamSource: null,
     speechToTextObj: {
       recording: false,
       transcripting: false,
+      intval: null,
+      text: '',
     },
     form: {
       'first-name': '',
@@ -705,7 +709,65 @@ export default {
           break
       }
     },
-    speechToText() {},
+    localSpeechToText() {
+      const $this = this
+      return {
+        async start() {
+          $this.$set($this.speechToTextObj, 'recording', true)
+          const permission = await $this.getMicrophonePermission()
+          if (permission === true) {
+            $this.recorder.record()
+            $this.speechToTextObj.intval = setInterval(() => {
+              $this.localSpeechToText().stop()
+            }, 2000)
+          }
+        },
+        stop(permanently = false) {
+          if (permanently) {
+            clearInterval($this.speechToTextObj.intval)
+            $this.$set($this.speechToTextObj, 'recording', false)
+            $this.recorder.stop()
+            $this.stream.getAudioTracks()[0].stop()
+          }
+          $this.recorder.exportWAV(async (blob) => {
+            const text = await $this.speechToText(blob)
+            const prevText = `${$this.speechToTextObj.text} ${text}`
+            $this.$set($this.speechToTextObj, 'text', prevText)
+          })
+        },
+      }
+    },
+    getMicrophonePermission() {
+      return new Promise((resolve, reject) => {
+        if (
+          this.audioContext &&
+          this.stream &&
+          this.mediaStreamSource &&
+          this.recorder
+        ) {
+          resolve(true)
+        }
+        const $this = this
+        this.audioContext = new AudioContext()
+        navigator.mediaDevices
+          .getUserMedia({
+            audio: true,
+          })
+          .then((stream) => {
+            $this.$set($this, 'stream', stream)
+            $this.mediaStreamSource =
+              $this.audioContext.createMediaStreamSource(stream)
+            // eslint-disable-next-line no-undef
+            $this.recorder = new Recorder($this.mediaStreamSource)
+            resolve(true)
+          })
+      })
+    },
+    stopMicAccess() {
+      if (this.stream) {
+        this.stream.getAudioTracks()[0].stop()
+      }
+    },
     localTextToSpeech() {
       const text = this.form.textToSpeech
       if (text.trim().length > 500) {
