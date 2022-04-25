@@ -27,7 +27,7 @@
     "lodash": "^4.17.21",
     "nuxt": "^2.15.3",
     "recorder-js": "^1.0.7",
-    "socket.io-client": "^4.1.2",
+    "socket.io-client": "^4.5.0",
     "vue-audio-visual": "^2.2.2",
     "vue-awesome-countdown": "^1.1.4",
     "vue-localstorage": "^0.6.2",
