@@ -1453,10 +1453,10 @@
   resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.9.2.tgz"
   integrity sha512-VZMYa7+fXHdwIq1TDhSXoVmSPEGM/aa+6Aiq3nVVJ9bXr24zScr+NlKFKC3iPljA7ho/GAZr+d2jOf5GIRC30Q==
 
-"@sweetalert2/theme-dark@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/@sweetalert2/theme-dark/-/theme-dark-5.0.0.tgz"
-  integrity sha512-lpO/uNn+LG9sA1bQn07zhB2cAdMGIfdTwiR7lZiOKsTXCGLz9P8nTC93Xu94dkYoExdpWbR2rZjIx4KFDjhUHQ==
+"@sweetalert2/theme-dark@^5.0.13":
+  version "5.0.13"
+  resolved "https://registry.yarnpkg.com/@sweetalert2/theme-dark/-/theme-dark-5.0.13.tgz#c0c261b524e033c18a9274fd799d0dc99bf1ef9c"
+  integrity sha512-/NtXZCO53mTleybnaAwDiT0B/lHls3KwOWcVHlIrTt1/LKI6h6U/1kqlIroeFERpWPmww0vRqmcbHYZSu0CZFg==
 
 "@types/anymatch@*":
   version "3.0.0"
